@@ -1,0 +1,458 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model AL {
+  ano_ciencia       Int?
+  nro_al            BigInt?
+  cod_modelo_al     Int?      @db.SmallInt
+  cod_cnpj8         Int?
+  cod_cnpj          BigInt?
+  cod_ie            BigInt?
+  razao_social      String?   @db.VarChar(100)
+  dt_ciencia        DateTime? @db.Date
+  dt_atu_al         DateTime? @db.Date
+  vlr_total         Float?    @db.Money
+  vlr_imposto       Float?    @db.Money
+  vlr_multa         Float?    @db.Money
+  vlr_juros         Float?    @db.Money
+  vlr_impugnado     Float?    @db.Money
+  vlr_apropriado    Float?    @db.Money
+  vlr_saldo_devedor Float?    @db.Money
+  dt_entrada_fase   DateTime? @db.Date
+  dre               String?   @db.VarChar(60)
+  cod_afre          Int?      @db.SmallInt
+  afre_titular      String?   @db.VarChar(200)
+  gpre              String?   @db.VarChar(20)
+  portador          String?   @db.VarChar(100)
+  ges_empresa       String?   @db.VarChar(100)
+  ges_estab         String?   @db.VarChar(100)
+  cod_fase_credito  String?   @db.VarChar(10)
+  dt_carga          DateTime? @db.Date
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model AL_Parametros {
+  cod_afre  Int?
+  nome_afre String? @db.VarChar(200)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Arrecadacao {
+  nro_arr                 Int?
+  nro_docto               BigInt?
+  dt_arrec                DateTime? @db.Date
+  dt_vencto               DateTime? @db.Date
+  dt_estorno              DateTime? @db.Date
+  ind_substituida         String?   @db.Char(1)
+  cod_ie                  BigInt?
+  cod_cnpj                BigInt?
+  cod_arr                 Int?
+  vlr_nominal_arrec_princ Float?    @db.Money
+  vlr_nominal_arrec_tot   Float?    @db.Money
+  nro_ref                 BigInt?
+  dt_carga                DateTime? @db.Date
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Base_Cadastro_IEs {
+  cod_ie          BigInt?
+  cod_cnpj        BigInt?
+  nome_contrib    String? @db.NVarChar(200)
+  ges_estab       String? @db.NVarChar(200)
+  tipo_contrib    String? @db.NVarChar(10)
+  cod_sit_contrib String? @db.NVarChar(5)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Contatos_DTE {
+  cod_cnpj8_contato     Int?
+  cod_cnpj_contato      BigInt?
+  nome_contato          String?   @db.VarChar(100)
+  cod_cpf_responsavel   BigInt?
+  cod_dd_contato        Int?      @db.SmallInt
+  nro_fone_contato      Int?
+  end_email_contato     String?   @db.VarChar(250)
+  ind_contato_principal String?   @db.Char(1)
+  dth_carga             DateTime? @db.Date
+
+  @@ignore
+}
+
+model tb_Atendente {
+  pk_Atendente      Int         @id @default(autoincrement())
+  NomeAtendente     String      @db.NVarChar(255)
+  IniciaisAtendente String      @db.NVarChar(255)
+  AtendenteAtivo    Boolean     @default(true)
+  Usuario           String?     @db.VarChar(255)
+  tb_Evento         tb_Evento[]
+}
+
+model tb_ATR {
+  pk_ATR             Int                  @id @default(autoincrement())
+  NomeATR            String               @db.NVarChar(255)
+  DescATR            String               @db.NText
+  DtIniATR           DateTime             @db.DateTime
+  DtFimATR           DateTime             @db.DateTime
+  NroSistemaATR      Int?
+  Ativa              Boolean              @default(true)
+  fk_UnidadeOrigem   Int
+  RelFinal           String?              @db.NText
+  fk_TpATR           Int                  @default(1)
+  tb_TpATR           tb_TpATR             @relation(fields: [fk_TpATR], references: [pk_TpATR])
+  tb_UnidadeOrigem   tb_UnidadeOrigem     @relation(fields: [fk_UnidadeOrigem], references: [pk_UnidadeOrigem])
+  tb_ParticipanteATR tb_ParticipanteATR[]
+}
+
+model tb_ContaCorrenteAL {
+  pk_ContaCorrente        Int                      @id @default(autoincrement())
+  NumCredito              Float?
+  fk_NumAL                Float
+  NumDAT                  Float?
+  DtInclus_oSGC           DateTime?                @map("DtInclusãoSGC") @db.DateTime
+  DtLancamento            DateTime?                @db.DateTime
+  VlrLancamento           Float?
+  NumLancamento           Int?
+  Estornado               String?                  @db.NVarChar(50)
+  DebitoCredito           String?                  @db.NVarChar(50)
+  NumDocumento            String?                  @db.NVarChar(50)
+  NumParcela              Int?
+  DtVencimentoParcela     DateTime?                @db.DateTime
+  fk_CodigoLancamento     Int?
+  NroIntCc                String?                  @db.NVarChar(255)
+  VlrPrincipal            Float?
+  VlrCmPrincipal          Float?
+  VlrCmePrincipal         Float?
+  VlrMulta                Float?
+  VlrCmMulta              Float?
+  VlrCmeMulta             Float?
+  VlrJ74J69               Float?
+  VlrCmJ69i               Float?
+  VlrCmeJ69               Float?
+  VlrJ69ii                Float?
+  VlrTotal                Float?
+  DtInclusao              DateTime?                @db.DateTime
+  tb_LancamentoFinanceiro tb_LancamentoFinanceiro? @relation(fields: [fk_CodigoLancamento], references: [pk_CodigoLancamento])
+}
+
+model tb_Contribuinte {
+  pk_Contribuinte       Int                  @id @default(autoincrement())
+  IE                    Float
+  CNPJ                  Float
+  Nome_Contrib          String               @db.NVarChar(255)
+  Municipio_Contrib     Int
+  GES_Estabelecimento   String               @db.NVarChar(255)
+  DtAtualizacaoRegistro DateTime             @default(now()) @db.DateTime
+  tb_Municipio          tb_Municipio         @relation(fields: [Municipio_Contrib], references: [pk_Municipio])
+  tb_ParticipanteATR    tb_ParticipanteATR[]
+}
+
+model tb_Delegacia {
+  pk_Delegacia Float          @id
+  Delegacia    String         @db.NVarChar(255)
+  tb_Municipio tb_Municipio[]
+}
+
+model tb_Evento {
+  pk_Evento            Int                @id @default(autoincrement())
+  fk_Participante      Int
+  fk_tpEvento          Int
+  DtEvento             DateTime           @default(now()) @db.DateTime
+  ObsEvento            String?            @db.NText
+  VlrPrincEvento       Float              @default(0) @db.Money
+  VlrTotalEvento       Float              @default(0) @db.Money
+  NumARR               Float?
+  DtVencimentoARR      DateTime?          @db.DateTime
+  CodARR               Float?
+  NumGAARR             Float?
+  ReferenciaARR        String?            @db.NVarChar(255)
+  NumAL                Float?
+  NumModeloAL          Float?
+  VlrMultaAL           Float?             @db.Money
+  VlrJurosAL           Float?             @db.Money
+  DtInclusaoEvento     DateTime           @default(now()) @db.DateTime
+  fk_Atendente         Int?
+  fk_OrigemAtendimento Int?
+  tb_Atendente         tb_Atendente?      @relation(fields: [fk_Atendente], references: [pk_Atendente])
+  tb_OrigemEvento      tb_OrigemEvento?   @relation(fields: [fk_OrigemAtendimento], references: [pk_OrigemEvento])
+  tb_ParticipanteATR   tb_ParticipanteATR @relation(fields: [fk_Participante], references: [pk_Participante])
+  tb_TpEvento          tb_TpEvento        @relation(fields: [fk_tpEvento], references: [pk_tpEvento])
+}
+
+model tb_FaseAL {
+  pk_Fase_AL       String          @id @db.NVarChar(255)
+  Nome_Fase_AL     String          @db.NVarChar(255)
+  Classe_Fase_AL   String          @db.NVarChar(255)
+  Etapa_Fase_AL    String          @db.NVarChar(255)
+  Situacao_Fase_AL String          @db.NVarChar(255)
+  Negociado        Boolean
+  tb_SituacaoAL    tb_SituacaoAL[]
+}
+
+model tb_ImportacaoArrecadacao {
+  pk_ImportacaoARR        Int       @id @default(autoincrement())
+  nro_arr                 Float?    @unique
+  nsr_ga_dia              Float?
+  dt_arrec                DateTime? @db.DateTime
+  dt_contabil_est         DateTime? @db.DateTime
+  dt_vencto               DateTime? @db.DateTime
+  cod_ie                  Float?
+  cod_cnpj                Float?
+  cod_arr                 Float?
+  vlr_nominal_arrec_princ Float?
+  vlr_nominal_arrec_tot   Float?
+  dth_carga_arquivo_dados DateTime? @db.DateTime
+  ind_substituida         String?   @db.NVarChar(255)
+  nro_ref                 Float?
+}
+
+model tb_ImportacaoCadastro {
+  pk_ImportacaoCadastro Int    @id @default(autoincrement())
+  IE___C_d              Float  @map("IE - Cód")
+  CNPJ___C_d            Float  @map("CNPJ - Cód")
+  Raz_o_Social_Nome     String @map("Razão Social/Nome") @db.NVarChar(255)
+  Munic_pio___C_d       Float  @map("Município - Cód")
+  GES_Estab             String @map("GES Estab") @db.NVarChar(255)
+  Tipo                  String @db.NVarChar(255)
+  Situa__o              String @map("Situação") @db.NVarChar(255)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model tb_ImportacaoEventos {
+  Respons_vel      String?   @map("Responsável") @db.NVarChar(255)
+  pk_Atendente     Int?
+  Origem_do_Evento String?   @map("Origem do Evento") @db.NVarChar(255)
+  pk_OrigemEvento  Int?
+  ATR              Int?      @db.SmallInt
+  IE               Float?
+  Nome             String?   @db.NVarChar(255)
+  Ind_cio          Float?    @map("Indício") @db.Money
+  Tipo_de_Evento   String?   @map("Tipo de Evento") @db.NVarChar(255)
+  fk_tpEvento      Int?      @db.SmallInt
+  Data_do_Evento   DateTime? @map("Data do Evento") @db.DateTime
+  Valor_do_Evento  Float?    @map("Valor do Evento") @db.Money
+  Observa__o       String?   @map("Observação") @db.NText
+
+  @@ignore
+}
+
+model tb_ImportacaoPagtosVerificados {
+  Chave_Participante Float    @map("Chave Participante")
+  ATR                Float
+  IE                 Float
+  CNPJ               Float
+  Nome_Contrib       String   @db.NVarChar(255)
+  Data_do_Pagto      DateTime @map("Data do Pagto") @db.DateTime
+  Data_de_Vencimento DateTime @map("Data de Vencimento") @db.DateTime
+  NumARR             Float
+  CodARR             Float
+  ReferenciaARR      String   @db.NVarChar(255)
+  Valor_ICMS         Float    @map("Valor ICMS") @db.Money
+  Valor_Total        Float    @map("Valor Total") @db.Money
+  Importar_V_F       String?  @db.NVarChar(1)
+
+  @@id([Chave_Participante, NumARR])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model tb_ImportacaoParticipantes {
+  ATR            Float?
+  COD_IERS       Float?
+  COD_INSCR_CNPJ Float?
+  COD_REFERENCIA DateTime? @db.DateTime
+  VLR_ESPERADO   Float?
+  VLR_DECLARADO  Float?    @db.Real
+  VLR_PAGO       Float?
+  REQUER_ANEXO   String?   @db.NVarChar(255)
+  TIPO_INDICIO   Int?
+
+  @@ignore
+}
+
+model tb_ImportacaoSituacaoAL {
+  pk_ImportacaoAL         Int       @id @default(autoincrement())
+  AL___DT_Ci_ncia___Ano   Float?    @map("AL - DT Ciência - Ano")
+  AL                      Float?
+  Empresa                 String?   @db.NVarChar(255)
+  Modelo                  Float?
+  IE                      Float?
+  CNPJ                    Float?
+  CNPJ8                   Float?
+  DT_Ci_ncia              DateTime? @map("DT Ciência") @db.DateTime
+  DT_Inc_Cobran_a         DateTime? @map("DT Inc Cobrança") @db.DateTime
+  Vlr_Total_AL            Float?    @map("Vlr Total AL") @db.Money
+  Vlr_Principal           Float?    @map("Vlr Principal") @db.Money
+  Vlr_Multa               Float?    @map("Vlr Multa") @db.Money
+  Vlr_Juros               Float?    @map("Vlr Juros") @db.Money
+  Vlr_Impugnado           Float?    @map("Vlr Impugnado") @db.Money
+  Vlr_Apropriado          Float?    @map("Vlr Apropriado") @db.Money
+  Saldo_Devedor           Float?    @map("Saldo Devedor") @db.Money
+  Fase                    String?   @db.NVarChar(255)
+  DT_Entrada_Fase         DateTime? @map("DT Entrada Fase") @db.DateTime
+  DRE                     String?   @db.NVarChar(255)
+  AFRE_Titular            String?   @map("AFRE Titular") @db.NVarChar(255)
+  GPRE                    String?   @db.NVarChar(255)
+  Portador                String?   @db.NVarChar(255)
+  GES_Empresa             String?   @map("GES Empresa") @db.NVarChar(255)
+  GES_Estabelecimento     String?   @map("GES Estabelecimento") @db.NVarChar(255)
+  fk_TpEvento             Int?
+  dth_carga_arquivo_dados DateTime? @db.DateTime
+}
+
+model tb_IndicioParticipante {
+  pk_IndicioParticipante Int                @id @default(autoincrement())
+  fk_Participante        Int
+  CompIndicio            DateTime           @db.DateTime
+  VlrIndicio             Float              @db.Money
+  fk_TpIndicio           Int
+  tb_ParticipanteATR     tb_ParticipanteATR @relation(fields: [fk_Participante], references: [pk_Participante])
+  tb_TpIndicio           tb_TpIndicio       @relation(fields: [fk_TpIndicio], references: [pk_TpIndicio])
+}
+
+model tb_LancamentoFinanceiro {
+  pk_CodigoLancamento Int                  @id @default(autoincrement())
+  TipoLancamentoAL    Int?
+  TipoLancamentoDAT   Int?
+  Descricao           String               @db.NVarChar(50)
+  Grupo               String               @db.NVarChar(50)
+  TipoAlteracaoSaldo  String               @db.NVarChar(50)
+  DtInicioVigencia    DateTime             @db.DateTime
+  DtFinalVigencia     DateTime?            @db.DateTime
+  DtInclusao          DateTime             @default(now()) @db.DateTime
+  tb_ContaCorrenteAL  tb_ContaCorrenteAL[]
+}
+
+model tb_Municipio {
+  pk_Municipio    Int               @id
+  Municipio       String            @db.NVarChar(255)
+  fk_Delegacia    Float
+  tb_Contribuinte tb_Contribuinte[]
+  tb_Delegacia    tb_Delegacia      @relation(fields: [fk_Delegacia], references: [pk_Delegacia])
+}
+
+model tb_OrigemEvento {
+  pk_OrigemEvento  Int         @id @default(autoincrement())
+  NomeOrigemEvento String      @db.NVarChar(255)
+  tb_Evento        tb_Evento[]
+}
+
+model tb_PagtosAVerificar {
+  pk_PagamentoAVerficar Int      @id @default(autoincrement())
+  fk_Participante       Int
+  DtEvento              DateTime @db.DateTime
+  ObsEvento             String?  @db.NText
+  VlrPrincEvento        Float    @db.Money
+  VlrTotalEvento        Float    @db.Money
+  NumARR                Float
+  DtVencimentoARR       DateTime @db.DateTime
+  CodARR                Float
+  NumGAARR              Float
+  ReferenciaARR         String   @db.NVarChar(255)
+  DtInclusaoEvento      DateTime @default(now()) @db.DateTime
+  fk_Atendente          Int?
+  fk_OrigemAtendimento  Int?
+
+  @@unique([fk_Participante, NumARR])
+}
+
+model tb_PagtosRecusados {
+  fk_Participante Int
+  NumARR          Float
+  DtEvento        DateTime @default(now()) @db.DateTime
+
+  @@id([fk_Participante, NumARR])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model tb_Parametro {
+  DiretorioArqAL           String? @db.NVarChar(255)
+  DiretorioArqALImportado  String? @db.NVarChar(255)
+  DiretorioArqARR          String? @db.NVarChar(255)
+  DiretorioArqARRSemFiltro String? @db.NVarChar(255)
+  DiretorioArqARRImportado String? @db.NVarChar(255)
+  DirOrigemBackup          String? @db.NVarChar(255)
+  DirDestBackup            String? @db.NVarChar(255)
+  NomeBD                   String? @db.NVarChar(255)
+  RecorrenciaBackup        Int?
+
+  @@ignore
+}
+
+model tb_ParticipanteATR {
+  pk_Participante        Int                      @id @default(autoincrement())
+  fk_Contribuinte        Int
+  fk_ATR                 Int
+  fk_IE                  Float
+  tb_Evento              tb_Evento[]
+  tb_IndicioParticipante tb_IndicioParticipante[]
+  tb_ATR                 tb_ATR                   @relation(fields: [fk_ATR], references: [pk_ATR])
+  tb_Contribuinte        tb_Contribuinte          @relation(fields: [fk_Contribuinte], references: [pk_Contribuinte])
+}
+
+model tb_SituacaoAL {
+  pk_SituacaoAL      Int        @id @default(autoincrement())
+  fk_AL              Float?
+  VlrImpugnadoAL     Float?     @db.Money
+  VlrApropriadoAL    Float?     @db.Money
+  VlrSaldoDevedorAL  Float?     @db.Money
+  DtEntradaFaseAl    DateTime?  @db.DateTime
+  fk_FaseAL          String?    @db.NVarChar(255)
+  DtInclusaoRegistro DateTime   @default(now()) @db.DateTime
+  tb_FaseAL          tb_FaseAL? @relation(fields: [fk_FaseAL], references: [pk_Fase_AL])
+}
+
+model tb_TpATR {
+  pk_TpATR Int      @id @default(autoincrement())
+  TpATR    String   @db.NVarChar(255)
+  TpATRObs String   @db.NText
+  tb_ATR   tb_ATR[]
+}
+
+model tb_TpEvento {
+  pk_tpEvento        Int         @id @default(autoincrement())
+  TipoEvento         String      @db.NVarChar(255)
+  AbvTpEvento        String      @db.NVarChar(255)
+  HabilitadoUsu_rio  Boolean     @default(true) @map("HabilitadoUsuário")
+  EventoVoluntario   Boolean     @default(true)
+  AfetaIndicadores   Boolean     @default(true)
+  TipoEventoAgrupado String?     @db.NVarChar(255)
+  tb_Evento          tb_Evento[]
+}
+
+model tb_TpIndicio {
+  pk_TpIndicio           Int                      @id @default(autoincrement())
+  TipoIndicio            String                   @db.NVarChar(255)
+  tb_IndicioParticipante tb_IndicioParticipante[]
+}
+
+model tb_TpSituacaoParticipante {
+  pk_SituacaoParticipante  Int    @id
+  NomeSituacaoParticipante String @db.NVarChar(255)
+}
+
+model tb_TpSituacaoParticipantePosPrograma {
+  pk_SituacaoParticipantePosPrograma  Int     @id
+  NomeSituacaoParticipantePosPrograma String  @db.NVarChar(255)
+  SiglaNomeSituacaoPosPrograma        String  @db.NVarChar(255)
+  Campo1                              String? @db.NVarChar(255)
+}
+
+model tb_UnidadeOrigem {
+  pk_UnidadeOrigem  Int      @id @default(autoincrement())
+  NomeUnidadeOrigem String   @db.NVarChar(255)
+  tb_ATR            tb_ATR[]
+}

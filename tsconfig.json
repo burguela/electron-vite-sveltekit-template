@@ -1,0 +1,13 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.json",
+  "include": ["src/preload/*.d.ts"],
+  "compilerOptions": {
+    "verbatimModuleSyntax": true,
+    "useDefineForClassFields": true,
+    "strict": false,
+    "allowJs": true,
+    "checkJs": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"]
+  },
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
